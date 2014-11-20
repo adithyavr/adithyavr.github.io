@@ -1,0 +1,118 @@
+<!Doctype HTML>
+<html>
+ <head>
+  <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+  <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+  <script src="top_states_tech.js"></script>
+  <script src="universities_points.js"></script>
+  <script src="most_cs_jobs.js"></script>
+  <script src="highestpaid-cs_jobs.js"></script>
+  <style>
+  html{height: 100%;}
+  body{height: 100%;
+    margin: 0px;
+  }
+   #drawing_maparea{ height: 100%;
+    }
+    #heading{
+
+      position: absolute;
+      bottom: 0px;
+      background-color: whitesmoke;
+      width: auto;
+      padding-right: 1%;
+      padding-left: 1%;
+      height:auto;
+      opacity:0.7;
+
+    }
+
+
+  </style>
+ </head>
+ <body>
+
+
+
+  <section id ='drawing_maparea'> 
+  </section>
+  <section id = 'heading'>
+    <h1> Analysis of college education </h1>
+</section>
+  <script>
+
+
+//Initializing map.
+
+var map = L.map('drawing_maparea').setView([39.130,-100.151], 5);
+  L.tileLayer('http://b.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: 'Analysis of college education'}).addTo(map);
+
+// crating a function to bind pop ups
+
+function popupCreator(feature,layer) {
+    // does this feature have a property named popupContent?
+    if (feature.properties && feature.properties.popupContent) {
+        layer.bindPopup(feature.properties.popupContent);
+    }
+}
+
+//styling variables begin --------------
+
+var area_top10_tech_style = {
+    "color": "#ff7800",
+    "weight": 2,
+    "opacity": 0.3
+};
+
+var most_cs_jobs_style = {
+    "color": "#FF08A8",
+    "weight": 2,
+    "opacity": 0.6
+};
+
+var point_best_universities_style = {
+    radius: 8,
+    fillColor: "#0093E3",
+    color: "#6ECCFF",
+    weight: 1,
+    opacity: 0.9,
+    fillOpacity: 0.6
+};
+
+var highestpaid_cs_jobs_style ={
+  "color": "#CC00FF",
+  "weight": 2,
+  "opacity": 0.6
+};
+
+
+
+//styling variables end ------------------
+
+
+var geo1 = L.geoJson(area_top10_tech,{ style:area_top10_tech_style });
+var geo2 = L.geoJson(point_best_universities,{onEachFeature:popupCreator,pointToLayer: 
+  function (feature, latlng) {
+        return L.circleMarker(latlng, point_best_universities_style);
+    } })
+var geo3 = L.geoJson(most_cs_jobs,{style:most_cs_jobs_style});
+var geo4 = L.geoJson(highestpaid_cs_jobs,{style:highestpaid_cs_jobs_style});
+L.layerGroup([geo1,geo3,geo2,geo4]).addTo(map);
+
+var overlays ={
+
+  "Top 10 Technology states": geo1,
+  "Top 10 CS jobs by cities":geo3,
+  "HCI Universities":geo2,
+  " </div>Highest paid CS jobs citites":geo4
+}
+
+var basemaps = {}
+
+
+
+L.control.layers(basemaps,overlays).addTo(map);
+  </script>
+  </body>
+</html>
